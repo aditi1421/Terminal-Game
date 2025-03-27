@@ -35,7 +35,14 @@ wss.on('connection', (ws) => {
       handleMove(ws, args[0]);
     } else if (command === 'say') {
       broadcast(`${ws.color}[${ws.id}]: ${args.join(' ')}${reset}`);
-    } else {
+    } else if (command === 'look') {
+      renderMap(ws);
+      return;
+    } else if (command === 'help') {
+      ws.send("Available commands: move north|south|east|west, say <msg>, look");
+      return;
+    }
+    else {
       ws.send(`Unknown command: ${command}`);
     }
     if (command === 'look') {
@@ -57,7 +64,7 @@ function renderMap(ws) {
     const player = gameState.players[ws.id];
     if (!player) return 'No player found.';
   
-    let output = '\n📍 Map View:\n';
+    let output = '\n Map View:\n';
   
     for (let y = 0; y < MAP_HEIGHT; y++) {
       let row = '';
@@ -66,7 +73,7 @@ function renderMap(ws) {
   
         for (const [id, p] of Object.entries(gameState.players)) {
           if (p.x === x && p.y === y) {
-            symbol = id === ws.id ? '🧍' : '👤';
+            symbol = id === ws.id ? '@' : '*';
             break;
           }
         }
