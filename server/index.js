@@ -10,6 +10,7 @@ const wss = new WebSocket.Server({ server });
 
 const colors = ['\x1b[31m', '\x1b[32m', '\x1b[33m']; // red, green, yellow
 const reset = '\x1b[0m';
+const shortId = ws.id.slice(0, 4); 
 
 const gameState = {
   players: {},
@@ -26,7 +27,8 @@ wss.on('connection', (ws) => {
 
   ws.send(`${ws.color}Welcome, ${ws.id}${reset}`);
 
-  broadcast(`${ws.color}${ws.id} has joined.${reset}`, ws);
+  broadcast(`${ws.color}Player ${shortId} has joined.${reset}`);
+
 
   ws.on('message', msg => {
     const [command, ...args] = msg.toString().trim().split(' ');
@@ -36,9 +38,10 @@ wss.on('connection', (ws) => {
     } else if (command === 'say') {
       broadcast(`${ws.color}[${ws.id}]: ${args.join(' ')}${reset}`);
     } else if (command === 'look') {
-      renderMap(ws);
-      return output;
-    } else if (command === 'help') {
+  const output = renderMap(ws);
+  ws.send(output);
+  return;
+} else if (command === 'help') {
       ws.send("Available commands: move north|south|east|west, say <msg>, look");
       return;
     }
