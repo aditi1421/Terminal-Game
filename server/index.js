@@ -27,9 +27,9 @@ wss.on('connection', (ws) => {
   ws.color = colors[Math.floor(Math.random() * colors.length)];
   gameState.players[ws.id] = { x: 0, y: 0 };
 
-  ws.send(`${ws.color}Welcome, ${ws.id}${reset}`);
 
 const shortId = ws.id.slice(0, 4);
+ws.send(`${ws.color}Welcome, ${ws.id}${reset}`);
 broadcast(`${ws.color}Player ${shortId} has joined.${reset}`);
 
 ws.on('message', msg => {
@@ -42,8 +42,9 @@ ws.on('message', msg => {
       broadcast(`${ws.color}[${ws.id}]: ${args.join(' ')}${reset}`);
     } else if (command === 'look') {
       const output = renderMap(ws);
+      console.log('Rendered map:', output);  // 👀 Logs in your terminal
       ws.send(output);
-    } else if (command === 'help') {
+   } else if (command === 'help') {
       ws.send("Available commands: move north|south|east|west, say <msg>, look");
     } else {
       ws.send(`Unknown command: ${command}`);
