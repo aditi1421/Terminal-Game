@@ -19,18 +19,18 @@ const gameState = {
 const MAP_WIDTH = 10;
 const MAP_HEIGHT = 10;
 
-const shortId = ws.id.slice(0, 4); 
+
 wss.on('connection', (ws) => {
-  // Assign ID and color
   ws.id = uuid();
   console.log(`${ws.id} connected`);
   ws.color = colors[Math.floor(Math.random() * colors.length)];
   gameState.players[ws.id] = { x: 0, y: 0 };
 
+  const shortId = ws.id.slice(0, 4); // ✅ moved here, now ws is defined
 
-const shortId = ws.id.slice(0, 4);
-ws.send(`${ws.color}Welcome, ${ws.id}${reset}`);
-broadcast(`${ws.color}Player ${shortId} has joined.${reset}`);
+  ws.send(`${ws.color}Welcome, ${ws.id}${reset}`);
+  broadcast(`${ws.color}Player ${shortId} has joined.${reset}`);
+
 
 ws.on('message', msg => {
   try {
