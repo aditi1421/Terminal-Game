@@ -23,15 +23,17 @@ const shortId = ws.id.slice(0, 4);
 wss.on('connection', (ws) => {
   // Assign ID and color
   ws.id = uuid();
+  console.log(`${ws.id} connected`);
   ws.color = colors[Math.floor(Math.random() * colors.length)];
   gameState.players[ws.id] = { x: 0, y: 0 };
 
   ws.send(`${ws.color}Welcome, ${ws.id}${reset}`);
 
+const shortId = ws.id.slice(0, 4);
 broadcast(`${ws.color}Player ${shortId} has joined.${reset}`);
 
-
-  ws.on('message', msg => {
+ws.on('message', msg => {
+  try {
     const [command, ...args] = msg.toString().trim().split(' ');
 
     if (command === 'move') {
@@ -39,17 +41,18 @@ broadcast(`${ws.color}Player ${shortId} has joined.${reset}`);
     } else if (command === 'say') {
       broadcast(`${ws.color}[${ws.id}]: ${args.join(' ')}${reset}`);
     } else if (command === 'look') {
-  const output = renderMap(ws);
-  ws.send(output);
-} else if (command === 'help') {
+      const output = renderMap(ws);
+      ws.send(output);
+    } else if (command === 'help') {
       ws.send("Available commands: move north|south|east|west, say <msg>, look");
-      return;
-    }
-    else {
+    } else {
       ws.send(`Unknown command: ${command}`);
     }
+  } catch (err) {
+    console.error('Message handler error:', err);
+  }
+});
 
-  });
 
   ws.on('close', () => {
     delete gameState.players[ws.id];
