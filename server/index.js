@@ -73,7 +73,7 @@ function renderMap(ws) {
   
         for (const [id, p] of Object.entries(gameState.players)) {
           if (p.x === x && p.y === y) {
-            symbol = id === ws.id ? '@' : '*';
+            symbol = id === ws.id ? '🧍' : '👤';
             break;
           }
         }
