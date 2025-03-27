@@ -1,7 +1,7 @@
 const term = new Terminal();
 term.open(document.getElementById('terminal'));
 
-const socket = new WebSocket(`ws://${location.host}`);
+const socket = new WebSocket(`ws://${wss://lavish-vitality-production.up.railway.app}`);
 
 let inputBuffer = '';
 
