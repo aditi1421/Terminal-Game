@@ -37,7 +37,7 @@ wss.on('connection', (ws) => {
       broadcast(`${ws.color}[${ws.id}]: ${args.join(' ')}${reset}`);
     } else if (command === 'look') {
       renderMap(ws);
-      return;
+      return output;
     } else if (command === 'help') {
       ws.send("Available commands: move north|south|east|west, say <msg>, look");
       return;
@@ -45,10 +45,6 @@ wss.on('connection', (ws) => {
     else {
       ws.send(`Unknown command: ${command}`);
     }
-    if (command === 'look') {
-        const view = renderMap(ws);
-        ws.send(view);
-      }
 
   });
 
